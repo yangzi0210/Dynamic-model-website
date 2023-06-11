@@ -89,3 +89,79 @@ declare namespace BasicListApi {
     data: Data;
   }
 }
+
+declare namespace PageApi {
+  interface Page {
+    title: string;
+    type: string;
+  }
+
+  interface Datum2 {
+    id: number;
+    parent_id: number;
+    name: string;
+    create_time: Date;
+    delete_time?: any;
+    status: number;
+    value: number;
+    title: string;
+    depth: number;
+  }
+
+  interface Datum {
+    title: string;
+    dataIndex: string;
+    key: string;
+    type: string;
+    disabled: boolean;
+    data: Datum2[];
+  }
+
+  interface Tab {
+    name: string;
+    title: string;
+    data: Datum[];
+  }
+
+  interface Datum3 {
+    component: string;
+    text: string;
+    type: string;
+    action: string;
+    uri: string;
+    method: string;
+  }
+
+  interface Action {
+    name: string;
+    title: string;
+    data: Datum3[];
+  }
+
+  interface Layout {
+    tabs: Tab[];
+    actions: Action[];
+  }
+
+  interface DataSource {
+    id: number;
+    username: string;
+    display_name: string;
+    create_time: Date;
+    update_time: Date;
+    status: number;
+    groups: number[];
+  }
+
+  interface Data {
+    page: Page;
+    layout: Layout;
+    dataSource: DataSource;
+  }
+
+  interface RootObject {
+    success: boolean;
+    message: string;
+    data: Data;
+  }
+}

@@ -1,21 +1,25 @@
-import { API_PREFIX } from '@/services/settings';
+import { API_PREFIX, X_API_KEY } from '@/services/settings';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Col, Pagination, Row, Space, Table } from 'antd';
+import { Button, Card, Col, Pagination, Row, Space, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useRequest } from 'umi';
-import ActionBuilder from './builder/ActionBuilder';
-import ColumnBuilder from './builder/ColumnBuilder';
+import ActionBuilder from './builders/ActionBuilder';
+import ColumnBuilder from './builders/ColumnBuilder';
+import ActionModal from './components/ActionModal';
 import styles from './index.less';
 
 const Index = () => {
   const [page, setPage] = useState(1);
   const [per_page, setPerPage] = useState(10);
+  const [sortQuery, setSortQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalUrl, setModalUrl] = useState('');
   const init = useRequest<{ data: BasicListApi.Data }>(
-    `${API_PREFIX}/admins?X-API-KEY=antd&page=${page}&per_page=${per_page}`,
+    `${API_PREFIX}/admins${X_API_KEY}&page=${page}&per_page=${per_page}${sortQuery}`,
   );
   useEffect(() => {
     init.run();
-  }, [page, per_page]);
+  }, [page, per_page, sortQuery]);
   // const searchLayout = () => {};
   const beforeTableLayout = () => {
     return (
@@ -24,7 +28,9 @@ const Index = () => {
           ...
         </Col>
         <Col xs={24} sm={12} className={styles.tableToolbar}>
-          <Space>{ActionBuilder(init?.data?.layout?.tableToolBar)}</Space>
+          <Space>
+            {ActionBuilder(init?.data?.layout?.tableToolBar, () => {})}
+          </Space>
         </Col>
       </Row>
     );
@@ -54,19 +60,54 @@ const Index = () => {
       </Row>
     );
   };
+  const tableChangeHandler = (_: any, __: any, sorter: any) => {
+    if (!sorter.order) {
+      setSortQuery('');
+    } else {
+      const orderBy = sorter.order === 'ascend' ? 'asc' : 'desc';
+      setSortQuery(`&sort=${sorter.field}&order=${orderBy}`);
+    }
+  };
   return (
     <PageContainer>
+      <Button
+        type="primary"
+        onClick={() => {
+          setModalUrl(`${API_PREFIX}/admins/add${X_API_KEY}`);
+          setIsModalOpen(true);
+        }}
+      >
+        Add
+      </Button>
+      <Button
+        type="primary"
+        onClick={() => {
+          setModalUrl(`${API_PREFIX}/admins/206${X_API_KEY}`);
+          setIsModalOpen(true);
+        }}
+      >
+        Edit
+      </Button>
       {/* {searchLayout()} */}
       <Card>
         {beforeTableLayout()}
         <Table
+          rowKey="id"
           dataSource={init?.data?.dataSource}
           columns={ColumnBuilder(init?.data?.layout?.tableColumn)}
           pagination={false}
           loading={init.loading}
+          onChange={tableChangeHandler}
         />
         {afterTableLayout()}
       </Card>
+      <ActionModal
+        isModalOpen={isModalOpen}
+        hideModal={() => {
+          setIsModalOpen(false);
+        }}
+        modalUrl={modalUrl}
+      />
     </PageContainer>
   );
 };

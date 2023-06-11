@@ -22,10 +22,9 @@ const ColumnBuilder = (tableColumn: BasicListApi.TableColumn[] | undefined) => {
           break;
         case 'actions':
           column.render = () => {
-            return <Space>{ActionBuilder(column.actions)}</Space>;
+            return <Space>{ActionBuilder(column.actions, () => {})}</Space>;
           };
           break;
-
         default:
           break;
       }
@@ -33,11 +32,12 @@ const ColumnBuilder = (tableColumn: BasicListApi.TableColumn[] | undefined) => {
     }
   });
 
-  const idColumn = [
+  const idColumn: BasicListApi.TableColumn[] = [
     {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+      sorter: true,
     },
   ];
 
