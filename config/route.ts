@@ -16,7 +16,7 @@ export const route = [
     component: './Access',
   },
   {
-    name: 'basic-list',
+    name: '管理页面',
     icon: 'TableOutlined',
     path: '/basicList',
     component: './BasicList',

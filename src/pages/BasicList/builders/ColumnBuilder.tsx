@@ -2,7 +2,10 @@ import { Space, Tag } from 'antd';
 import dayjs from 'dayjs';
 import ActionBuilder from './ActionBuilder';
 
-const ColumnBuilder = (tableColumn: BasicListApi.TableColumn[] | undefined) => {
+const ColumnBuilder = (
+  tableColumn: BasicListApi.TableColumn[] | undefined,
+  actionHandler: BasicListApi.ActionHandler,
+) => {
   const newColumns: BasicListApi.TableColumn[] = [];
   (tableColumn || []).forEach((column) => {
     if (column.hideInColumn !== true) {
@@ -15,14 +18,18 @@ const ColumnBuilder = (tableColumn: BasicListApi.TableColumn[] | undefined) => {
         case 'switch':
           column.render = (value: any) => {
             const option = (column.data || []).find(
-              (item) => item.value === value,
+              (item: any) => item.value === value,
             );
             return <Tag color={value ? 'blue' : 'red'}>{option?.title}</Tag>;
           };
           break;
         case 'actions':
-          column.render = () => {
-            return <Space>{ActionBuilder(column.actions, () => {})}</Space>;
+          column.render = (_: any, record: any) => {
+            return (
+              <Space>
+                {ActionBuilder(column.actions, actionHandler, false, record)}
+              </Space>
+            );
           };
           break;
         default:

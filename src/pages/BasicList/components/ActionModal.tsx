@@ -1,32 +1,11 @@
-import { PREFIX } from '@/services/settings';
+import { PREFIX, X_API_KEY } from '@/services/settings';
 import { useRequest } from '@umijs/max';
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, message } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import ActionBuilder from '../builders/ActionBuilder';
 import FormBuild from '../builders/FormBuilder';
-
-const setFieldsFormat = (data: PageApi.Data) => {
-  const result = {};
-  if (data?.layout.tabs && data?.dataSource) {
-    data.layout.tabs.forEach((tab) => {
-      tab.data.forEach((field) => {
-        const key = field.key;
-        switch (field.type) {
-          case 'datetime':
-            //@ts-ignore
-            result[key] = dayjs(data.dataSource[key]);
-            break;
-          default:
-            //@ts-ignore
-            result[key] = data.dataSource[key];
-            break;
-        }
-      });
-    });
-  }
-  return result;
-};
+import { setFieldsFormat, submitFieldsFormat } from '../utils';
 
 const ActionModal = ({
   isModalOpen,
@@ -34,21 +13,34 @@ const ActionModal = ({
   modalUrl,
 }: {
   isModalOpen: boolean;
-  hideModal: () => void;
+  hideModal: (reload?: boolean) => void;
   modalUrl: string;
 }) => {
   const [form] = Form.useForm();
-  const init = useRequest<{ data: PageApi.Data }>(`${modalUrl}`, {
-    manual: true,
-  });
+
+  const init = useRequest<{ data: BasicListApi.PageData }>(
+    `${PREFIX}${modalUrl}${X_API_KEY}`,
+    {
+      manual: true,
+      onError: () => {
+        hideModal();
+      },
+    },
+  );
+
   const request = useRequest(
     (values: any) => {
+      message.loading({
+        content: 'Processing...',
+        key: 'process',
+        duration: 0,
+      });
       const { uri, method, ...formValues } = values;
       return {
         url: `${PREFIX}${uri}`,
         method,
         data: {
-          ...formValues,
+          ...submitFieldsFormat(formValues),
           'X-API-KEY': 'antd',
           create_time: dayjs(formValues.create_time).format(),
           update_time: dayjs(formValues.update_time).format(),
@@ -57,6 +49,16 @@ const ActionModal = ({
     },
     {
       manual: true,
+      onSuccess: (data) => {
+        message.success({
+          content: data.message,
+          key: 'process',
+        });
+        hideModal(true);
+      },
+      formatResult: (res: any) => {
+        return res;
+      },
     },
   );
   const layout = {
@@ -83,7 +85,10 @@ const ActionModal = ({
         form.setFieldsValue({ uri: action.uri, method: action.method });
         form.submit();
         break;
-
+      case 'cancel':
+        hideModal();
+      case 'reset':
+        form.resetFields();
       default:
         break;
     }
@@ -92,15 +97,18 @@ const ActionModal = ({
   const onFinsh = (values: any) => {
     request.run(values);
   };
+
   return (
     <div>
       <Modal
         title={init?.data?.page?.title}
         open={isModalOpen}
-        onCancel={hideModal}
+        // () => void 格式一致时 可以直接传函数名
+        onCancel={() => hideModal()}
         footer={ActionBuilder(
           init?.data?.layout?.actions[0]?.data,
           actionHandler,
+          request.loading,
         )}
         maskClosable={false}
       >
