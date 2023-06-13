@@ -1,7 +1,7 @@
 import { API_PREFIX, PREFIX, X_API_KEY } from '@/services/settings';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
-import { useRequest } from '@umijs/max';
+import { history, useRequest } from '@umijs/max';
 import { Card, Col, Modal, Pagination, Row, Space, Table, message } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import ActionBuilder from './builders/ActionBuilder';
@@ -90,16 +90,24 @@ const Index = () => {
     action: BasicListApi.Action,
     record: BasicListApi.TableColumn,
   ) {
-    let url: string | undefined = '';
     switch (action.action) {
-      case 'modal':
-        url = action.uri?.replace(
+      case 'modal': {
+        const url: string | undefined = action.uri?.replace(
           /:\w+/g,
           (field) => record[field.replace(':', '')],
         );
         setModalUrl(url as string);
         setIsModalOpen(true);
         break;
+      }
+      case 'page': {
+        const url = action.uri?.replace(
+          /:\w+/g,
+          (field) => record[field.replace(':', '')],
+        );
+        history.push(`/basicList${url}`);
+        break;
+      }
       case 'reload':
         init.run();
         break;

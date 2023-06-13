@@ -21,4 +21,11 @@ export const route = [
     path: '/basicList',
     component: './BasicList',
   },
+  {
+    name: '单页编辑',
+    icon: 'TableOutlined',
+    path: '/basicList/api/admins/:id',
+    component: './BasicList/components/EditPage',
+    hideInMenu: true,
+  },
 ];
