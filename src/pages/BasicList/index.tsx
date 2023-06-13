@@ -3,14 +3,16 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import { useRequest } from '@umijs/max';
 import { Card, Col, Modal, Pagination, Row, Space, Table, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ActionBuilder from './builders/ActionBuilder';
 import ColumnBuilder from './builders/ColumnBuilder';
 import ActionModal from './components/ActionModal';
 import styles from './index.less';
+
+const { confirm } = Modal;
+
 const Index = () => {
-  const [page, setPage] = useState<number>(1);
-  const [per_page, setPerPage] = useState<number>(10);
+  const [pageQuery, setPageQuery] = useState<string>('');
   const [sortQuery, setSortQuery] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalUrl, setModalUrl] = useState<string>('');
@@ -21,9 +23,10 @@ const Index = () => {
   const [tableColumns, setTableColumns] = useState<BasicListApi.TableColumn[]>(
     [],
   );
-  const { confirm } = Modal;
+  const batchTableColumns = useRef<BasicListApi.TableColumn[]>([]);
+
   const init = useRequest<{ data: BasicListApi.ListData }>(
-    `${API_PREFIX}/admins${X_API_KEY}&page=${page}&per_page=${per_page}${sortQuery}`,
+    `${API_PREFIX}/admins${X_API_KEY}${pageQuery}${sortQuery}`,
   );
   const request = useRequest(
     (values: any) => {
@@ -46,7 +49,7 @@ const Index = () => {
       manual: true,
       onSuccess: (data: any) => {
         message.success({
-          content: data.message,
+          content: data?.message,
           key: 'process',
         });
       },
@@ -57,27 +60,36 @@ const Index = () => {
   );
   useEffect(() => {
     init.run();
-  }, [page, per_page, sortQuery]);
-  // const searchLayout = () => {};
+  }, [pageQuery, sortQuery]);
+
   useEffect(() => {
     if (init?.data?.layout?.tableColumn) {
-      setTableColumns(
+      const tableColumns = ColumnBuilder(
+        init.data.layout.tableColumn,
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        ColumnBuilder(init?.data?.layout?.tableColumn, actionHandler),
+        actionHandler,
       );
+      batchTableColumns.current = tableColumns;
+      setTableColumns(tableColumns);
     }
   }, [init?.data?.layout?.tableColumn]);
-  const batchOverview = () => {
+  const batchOverview = (dataSource: BasicListApi.TableColumn[]) => {
     return (
       <Table
         size="small"
         rowKey="id"
-        columns={[tableColumns[0] || {}, tableColumns[1] || {}]}
-        dataSource={selectedRows}
+        columns={[
+          batchTableColumns.current[0] || {},
+          batchTableColumns.current[1] || {},
+        ]}
+        dataSource={dataSource}
       />
     );
   };
-  function actionHandler(action: BasicListApi.Action, record: any) {
+  function actionHandler(
+    action: BasicListApi.Action,
+    record: BasicListApi.TableColumn,
+  ) {
     let url: string | undefined = '';
     switch (action.action) {
       case 'modal':
@@ -95,7 +107,9 @@ const Index = () => {
         confirm({
           title: 'Are you sure delete this task?',
           icon: <ExclamationCircleOutlined />,
-          content: batchOverview(),
+          content: batchOverview(
+            Object.keys(record).length ? [record] : selectedRows,
+          ),
           okText: 'Sure To Delete!',
           cancelText: 'Cancel',
           onOk() {
@@ -104,18 +118,18 @@ const Index = () => {
               uri: action.uri,
               method: action.method,
               type: 'delete',
-              ids: selectedRowKeys,
+              // 批量和单行操作
+              ids: Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },
-          onCancel() {
-            console.log('Cancel');
-          },
+          onCancel() {},
         });
         break;
       default:
         break;
     }
   }
+  // const searchLayout = () => {};
   const beforeTableLayout = () => {
     return (
       <Row>
@@ -130,9 +144,8 @@ const Index = () => {
       </Row>
     );
   };
-  const paginationChangeHandler = (_page: any, _per_page: any) => {
-    setPage(_page);
-    setPerPage(_per_page);
+  const paginationChangeHandler = (page: any, per_page: any) => {
+    setPageQuery(`&page=${page}&per_page=${per_page}`);
   };
   const afterTableLayout = () => {
     return (

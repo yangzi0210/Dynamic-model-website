@@ -1,10 +1,11 @@
 import { PREFIX, X_API_KEY } from '@/services/settings';
 import { useRequest } from '@umijs/max';
-import { Form, Input, Modal, message } from 'antd';
+import { Form, Input, Modal, Spin, Tag, message } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import ActionBuilder from '../builders/ActionBuilder';
-import FormBuild from '../builders/FormBuilder';
+import FormBuilder from '../builders/FormBuilder';
+import styles from '../index.less';
 import { setFieldsFormat, submitFieldsFormat } from '../utils';
 
 const ActionModal = ({
@@ -111,25 +112,39 @@ const ActionModal = ({
           request.loading,
         )}
         maskClosable={false}
+        forceRender
       >
-        <Form
-          {...layout}
-          form={form}
-          initialValues={{
-            create_time: dayjs(),
-            update_time: dayjs(),
-            status: true,
-          }}
-          onFinish={onFinsh}
-        >
-          {FormBuild(init?.data?.layout?.tabs[0]?.data)}
-          <Form.Item name="uri" key="uri" hidden>
-            <Input />
-          </Form.Item>
-          <Form.Item name="method" key="method" hidden>
-            <Input />
-          </Form.Item>
-        </Form>
+        {init?.loading ? (
+          // 优化用户体验
+          <Spin tip="Loading..." />
+        ) : (
+          <>
+            <Form
+              {...layout}
+              form={form}
+              initialValues={{
+                create_time: dayjs(),
+                update_time: dayjs(),
+                status: true,
+              }}
+              onFinish={onFinsh}
+            >
+              {FormBuilder(init?.data?.layout?.tabs[0]?.data)}
+              <Form.Item name="uri" key="uri" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="method" key="method" hidden>
+                <Input />
+              </Form.Item>
+            </Form>
+            <Tag className={styles.formUpdateTime} color="geekblue">
+              Update Time: &nbsp;
+              {dayjs(form.getFieldValue('update_time')).format(
+                'YYYY-MM-DD HH:mm:ss',
+              )}
+            </Tag>
+          </>
+        )}
       </Modal>
     </div>
   );

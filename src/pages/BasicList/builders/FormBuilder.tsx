@@ -10,7 +10,9 @@ const FormBuilder = (data: BasicListApi.TableColumn[] | undefined) => {
           </Form.Item>
         );
       case 'datetime':
-        return (
+        return field.key === 'update_time' ? (
+          <></>
+        ) : (
           <Form.Item label={field.title} name={field.key} key={field.key}>
             <DatePicker showTime disabled={field.disabled} />
           </Form.Item>

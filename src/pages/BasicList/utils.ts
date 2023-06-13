@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 
 export const setFieldsFormat = (data: BasicListApi.PageData) => {
   const result = {};
-  if (data?.layout.tabs && data?.dataSource) {
+  if (data?.layout.tabs && data.dataSource) {
     data.layout.tabs.forEach((tab) => {
       tab.data.forEach((field) => {
         const key = field.key;
