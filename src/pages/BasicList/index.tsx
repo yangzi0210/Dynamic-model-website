@@ -1,14 +1,30 @@
 import { API_PREFIX, PREFIX, X_API_KEY } from '@/services/settings';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import { history, useRequest } from '@umijs/max';
-import { Card, Col, Modal, Pagination, Row, Space, Table, message } from 'antd';
+import { useToggle } from 'ahooks';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  InputNumber,
+  Modal,
+  Pagination,
+  Row,
+  Space,
+  Table,
+  Tooltip,
+  message,
+} from 'antd';
+import queryString from 'query-string';
 import { useEffect, useRef, useState } from 'react';
 import ActionBuilder from './builders/ActionBuilder';
 import ColumnBuilder from './builders/ColumnBuilder';
+import SearchBuilder from './builders/SearchBuilder';
 import ActionModal from './components/ActionModal';
 import styles from './index.less';
-
+import { submitFieldsFormat } from './utils';
 const { confirm } = Modal;
 
 const Index = () => {
@@ -23,12 +39,22 @@ const Index = () => {
   const [tableColumns, setTableColumns] = useState<BasicListApi.TableColumn[]>(
     [],
   );
+  const [searchVisiable, searchActions] = useToggle<boolean>(false);
   const batchTableColumns = useRef<BasicListApi.TableColumn[]>([]);
 
-  const init = useRequest<{ data: BasicListApi.ListData }>(
-    `${API_PREFIX}/admins${X_API_KEY}${pageQuery}${sortQuery}`,
-  );
-  const request = useRequest(
+  const init = useRequest<{ data: BasicListApi.ListData }>((values: any) => {
+    return {
+      url: `${API_PREFIX}/admins${X_API_KEY}${pageQuery}${sortQuery}`,
+      params: values,
+      paramsSerializer: (params: any) =>
+        queryString.stringify(params, {
+          arrayFormat: 'comma',
+          skipEmptyString: true,
+          skipNull: true,
+        }),
+    };
+  });
+  const request = useRequest<{ data: BasicListApi.ListData }>(
     (values: any) => {
       message.loading({
         content: 'Processing...',
@@ -112,21 +138,23 @@ const Index = () => {
         init.run();
         break;
       case 'delete':
+      case 'deletePermanently':
+      case 'restore':
         confirm({
-          title: 'Are you sure delete this task?',
+          title: `Are you sure ${action.action} this task?`,
           icon: <ExclamationCircleOutlined />,
           content: batchOverview(
             Object.keys(record).length ? [record] : selectedRows,
           ),
-          okText: 'Sure To Delete!',
+          okText: `Sure To ${action.action}!`,
           cancelText: 'Cancel',
           onOk() {
             // 加上 return 就可以实现按钮 loading 原理看文档 Promise
             return request.run({
               uri: action.uri,
               method: action.method,
-              type: 'delete',
-              // 批量和单行操作
+              type: action.action,
+              // 批量和单行的编辑操作
               ids: Object.keys(record).length ? [record.id] : selectedRowKeys,
             });
           },
@@ -137,7 +165,49 @@ const Index = () => {
         break;
     }
   }
-  // const searchLayout = () => {};
+  const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  };
+  const onFinish = (value: any) => {
+    init.run(submitFieldsFormat(value));
+  };
+  const searchLayout = () => {
+    return (
+      searchVisiable && (
+        <Card key="searchForm">
+          <Form {...layout} onFinish={onFinish}>
+            <Row gutter={24}>
+              <Col sm={6}>
+                <Form.Item label="ID" name="id" key="id">
+                  <InputNumber style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              {SearchBuilder(init.data?.layout.tableColumn)}
+            </Row>
+            <Row>
+              <Col sm={24} className={styles.textAlignRight}>
+                <Space key="space">
+                  <Button type="primary" htmlType="submit" key="submitButton">
+                    Submit
+                  </Button>
+                  <Button
+                    htmlType="reset"
+                    onClick={() => {
+                      init.run();
+                    }}
+                    key="clearButton"
+                  >
+                    Clear
+                  </Button>
+                </Space>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+      )
+    );
+  };
   const beforeTableLayout = () => {
     return (
       <Row>
@@ -146,6 +216,14 @@ const Index = () => {
         </Col>
         <Col xs={24} sm={12} className={styles.tableToolbar}>
           <Space>
+            <Tooltip title="search">
+              <Button
+                type={searchVisiable ? 'primary' : 'default'}
+                shape="circle"
+                icon={<SearchOutlined />}
+                onClick={() => searchActions.toggle()}
+              />
+            </Tooltip>
             {ActionBuilder(init?.data?.layout?.tableToolBar, actionHandler)}
           </Space>
         </Col>
@@ -205,7 +283,7 @@ const Index = () => {
   // ActionBuilder(init?.data?.layout?.batchToolBar, actionHandler);
   return (
     <PageContainer>
-      {/* {searchLayout()} */}
+      {searchLayout()}
       <Card>
         {beforeTableLayout()}
         <Table

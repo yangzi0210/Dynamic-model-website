@@ -2,11 +2,11 @@
   "private": true,
   "author": "yangziao <yangziao@zhihu.com>",
   "scripts": {
-    "dev": "max dev",
     "build": "max build",
+    "dev": "max dev",
     "format": "prettier --cache --write .",
-    "prepare": "husky install",
     "postinstall": "max setup",
+    "prepare": "husky install",
     "setup": "max setup",
     "start": "npm run dev"
   },
@@ -14,7 +14,10 @@
     "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.4",
     "@umijs/max": "^4.0.68",
-    "antd": "^5.4.0"
+    "ahooks": "^3.7.7",
+    "antd": "^5.4.0",
+    "query-string": "^8.1.0",
+    "rc-queue-anim": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.33",

@@ -28,6 +28,11 @@ export const submitFieldsFormat = (formValues: any) => {
     if (dayjs.isDayjs(formValues[key])) {
       result[key] = dayjs(formValues[key]).format();
     }
+    if (Array.isArray(formValues[key])) {
+      result[key] = formValues[key].map((innerValue: any) =>
+        dayjs.isDayjs(innerValue) ? dayjs(innerValue).format() : innerValue,
+      );
+    }
   });
   return result;
 };
