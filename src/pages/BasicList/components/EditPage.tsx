@@ -49,6 +49,7 @@ const EditPage = () => {
       formatResult: (res: any) => {
         return res;
       },
+      throttleInterval: 1000,
     },
   );
 

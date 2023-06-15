@@ -2,7 +2,7 @@ import { PREFIX, X_API_KEY } from '@/services/settings';
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import { history, useLocation, useRequest } from '@umijs/max';
-import { useToggle } from 'ahooks';
+import { useToggle, useUpdateEffect } from 'ahooks';
 import {
   Button,
   Card,
@@ -85,9 +85,10 @@ const Index = () => {
       formatResult: (res: any) => {
         return res;
       },
+      throttleInterval: 1000,
     },
   );
-  useEffect(() => {
+  useUpdateEffect(() => {
     init.run();
   }, [pageQuery, sortQuery, location.pathname]);
 

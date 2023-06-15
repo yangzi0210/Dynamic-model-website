@@ -60,6 +60,7 @@ const ActionModal = ({
       formatResult: (res: any) => {
         return res;
       },
+      throttleInterval: 1000,
     },
   );
   const layout = {

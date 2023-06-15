@@ -20,5 +20,10 @@
 - ✅ 添加搜索组件 其中展开按钮用 ahooks 的 useToggle
 - ✅ 利用 Button 的 htmlType 属性 `submit`、`reset`
 - ⬜ replace()方法
-- ⬜ 从服务端请求菜单 问题：服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
-  - iconfontUrl
+- ✅ 从服务端请求菜单 问题：路由与页面匹配问题 & 服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
+  - iconfontUrl 用阿里的 iconfont
+  - 通配符 \* :id :name 匹配
+- ✅ 关于提问 antd issue & Google & github & stackoverflow & 官方文档 & 最小重现 codesandbox
+- 问题：打开浏览器控制台 Network 费县首次进入页面有两个相同的 http 请求
+  - 使用 ahooks useWhyDidYouUpdate 找到依赖状态的变化 其实就是 useEffect 首次执行一次 依赖的状态刚进入页面时会从无到有再执行一次
+  - 使用 ahooks useUpdateEffect 让 useEffect 首次不执行，只在依赖项更新时运行
