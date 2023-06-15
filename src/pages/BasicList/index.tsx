@@ -1,7 +1,7 @@
-import { API_PREFIX, PREFIX, X_API_KEY } from '@/services/settings';
+import { PREFIX, X_API_KEY } from '@/services/settings';
 import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
-import { history, useRequest } from '@umijs/max';
+import { history, useLocation, useRequest } from '@umijs/max';
 import { useToggle } from 'ahooks';
 import {
   Button,
@@ -41,10 +41,13 @@ const Index = () => {
   );
   const [searchVisiable, searchActions] = useToggle<boolean>(false);
   const batchTableColumns = useRef<BasicListApi.TableColumn[]>([]);
-
+  const location = useLocation();
   const init = useRequest<{ data: BasicListApi.ListData }>((values: any) => {
     return {
-      url: `${API_PREFIX}/admins${X_API_KEY}${pageQuery}${sortQuery}`,
+      url: `${PREFIX}${location.pathname.replace(
+        '/basic-list',
+        '',
+      )}${X_API_KEY}${pageQuery}${sortQuery}`,
       params: values,
       paramsSerializer: (params: any) =>
         queryString.stringify(params, {
@@ -86,7 +89,7 @@ const Index = () => {
   );
   useEffect(() => {
     init.run();
-  }, [pageQuery, sortQuery]);
+  }, [pageQuery, sortQuery, location.pathname]);
 
   useEffect(() => {
     if (init?.data?.layout?.tableColumn) {
@@ -131,7 +134,7 @@ const Index = () => {
           /:\w+/g,
           (field) => record[field.replace(':', '')],
         );
-        history.push(`/basicList${url}`);
+        history.push(`/basic-list${url}`);
         break;
       }
       case 'reload':

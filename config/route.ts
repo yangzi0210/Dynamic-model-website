@@ -18,13 +18,13 @@ export const route = [
   {
     name: '管理页面',
     icon: 'TableOutlined',
-    path: '/basicList',
+    path: '/basic-list/*',
     component: './BasicList',
   },
   {
     name: '单页编辑',
     icon: 'TableOutlined',
-    path: '/basicList/api/admins/:id',
+    path: '/basic-list/api/:name/:id',
     component: './BasicList/components/EditPage',
     hideInMenu: true,
   },

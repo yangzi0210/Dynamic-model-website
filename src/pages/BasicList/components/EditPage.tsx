@@ -13,7 +13,7 @@ const EditPage = () => {
   const [form] = Form.useForm();
   const location = useLocation();
   const init = useRequest<{ data: BasicListApi.PageData }>(
-    `${PREFIX}${location.pathname.replace('/basicList', '')}${X_API_KEY}`,
+    `${PREFIX}${location.pathname.replace('/basic-list', '')}${X_API_KEY}`,
     {
       onError: () => {
         history.back();
