@@ -42,21 +42,30 @@ const Index = () => {
   const [searchVisiable, searchActions] = useToggle<boolean>(false);
   const batchTableColumns = useRef<BasicListApi.TableColumn[]>([]);
   const location = useLocation();
-  const init = useRequest<{ data: BasicListApi.ListData }>((values: any) => {
-    return {
-      url: `${PREFIX}${location.pathname.replace(
-        '/basic-list',
-        '',
-      )}${X_API_KEY}${pageQuery}${sortQuery}`,
-      params: values,
-      paramsSerializer: (params: any) =>
-        queryString.stringify(params, {
-          arrayFormat: 'comma',
-          skipEmptyString: true,
-          skipNull: true,
-        }),
-    };
-  });
+  const init = useRequest<{ data: BasicListApi.ListData }>(
+    (values: any) => {
+      return {
+        url: `${PREFIX}${location.pathname.replace(
+          '/basic-list',
+          '',
+        )}${X_API_KEY}${pageQuery}${sortQuery}`,
+        params: values,
+        paramsSerializer: (params: any) =>
+          queryString.stringify(params, {
+            arrayFormat: 'comma',
+            skipEmptyString: true,
+            skipNull: true,
+          }),
+      };
+    },
+    {
+      // 初始化、切换页面时也要置空
+      onSuccess: () => {
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+      },
+    },
+  );
   const request = useRequest<{ data: BasicListApi.ListData }>(
     (values: any) => {
       message.loading({
@@ -76,11 +85,12 @@ const Index = () => {
     },
     {
       manual: true,
-      onSuccess: (data: any) => {
+      onSuccess: (data: BasicListApi.Root) => {
         message.success({
           content: data?.message,
           key: 'process',
         });
+        init.run();
       },
       formatResult: (res: any) => {
         return res;
@@ -199,6 +209,9 @@ const Index = () => {
                     htmlType="reset"
                     onClick={() => {
                       init.run();
+                      // 注意这里也要置空 不然底部批量操作栏不会消失
+                      setSelectedRowKeys([]);
+                      setSelectedRows([]);
                     }}
                     key="clearButton"
                   >

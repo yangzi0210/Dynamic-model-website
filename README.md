@@ -2,7 +2,7 @@
 
 `@umijs/max` 模板项目，更多功能参考 [Umi Max 简介](https://umijs.org/docs/max/introduce)
 
-## 问题
+## 总结
 
 - ✅ 碰到问题多用谷歌、多看官方文档 百度 CSDN 都是一个抄一个 而且不一定好使
   - 比如 如何判断一个对象是不是 moment/dayjs 百度搜索都是什么说 可以使用\_isAMomentObject 这个属性进行判断 谷歌一搜官方文档说了 直接用 moment.isMoment() dayjs.isDayjs() 就行 好用还清晰
@@ -21,9 +21,15 @@
 - ✅ 利用 Button 的 htmlType 属性 `submit`、`reset`
 - ⬜ replace()方法
 - ✅ 从服务端请求菜单 问题：路由与页面匹配问题 & 服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
-  - iconfontUrl 用阿里的 iconfont
+  - app.ts layout 增加 iconfontUrl 用阿里的 iconfont
   - 通配符 \* :id :name 匹配
 - ✅ 关于提问 antd issue & Google & github & stackoverflow & 官方文档 & 最小重现 codesandbox
-- 问题：打开浏览器控制台 Network 费县首次进入页面有两个相同的 http 请求
+- ✅ 打开浏览器控制台 Network 发现首次进入页面有两个相同的 http 请求
   - 使用 ahooks useWhyDidYouUpdate 找到依赖状态的变化 其实就是 useEffect 首次执行一次 依赖的状态刚进入页面时会从无到有再执行一次
   - 使用 ahooks useUpdateEffect 让 useEffect 首次不执行，只在依赖项更新时运行
+- ⬜ 动态模型的原理 字段的增加等
+  - Get layout ? Get layout form 'listBuilder' (code from Model) : Get layout form 'Database' (code from Trait)
+  - 前端传的布局 JSON 给后端，后端一式两份，一份格式化处理拆分字段，一份原封不动存储，前端需要时再传回去
+- ✅ 垃圾箱进入退出后 & 切换页面后 批量选择项（batchToolbar）持续存在 注意 setSelectedRowKeys setSelectedRows 置空解决
+- ✅ console 报错的问题 <Col> 组件也要加 key
+- ⬜ 有时间完善下登录页相关
