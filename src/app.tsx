@@ -1,15 +1,9 @@
-import { PageLoading } from '@ant-design/pro-layout';
-import { RunTimeLayoutConfig } from '@umijs/max';
 import { message } from 'antd';
+import Footer from './components/Footer';
 import { currentMenu as queryCurrentMenu } from './services/api';
 // 运行时配置
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
-
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: PageLoading,
-};
 
 export const getInitialState = async (): Promise<{
   name?: string;
@@ -27,8 +21,8 @@ export const getInitialState = async (): Promise<{
   const currentMenu = await fetchMenu();
   return { currentMenu, name: 'yangzi' };
 };
-
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+//@ts-ignore
+export const layout = ({ initialState }) => {
   return {
     logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
     menu: {
@@ -37,11 +31,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     menuDataRender: () => {
       return initialState?.currentMenu;
     },
+    footerRender: () => <Footer />,
     iconfontUrl: '//at.alicdn.com/t/font_2112134_uyx998l7ji.js',
   };
 };
-
-const errorHandler = (error: any) => {
+//@ts-ignore
+const errorHandler = (error) => {
   switch (error.name) {
     case 'BizError':
       if (error.data.message) {
@@ -77,6 +72,6 @@ const errorHandler = (error: any) => {
   }
 };
 
-export const request: any = {
+export const request = {
   errorHandler,
 };
