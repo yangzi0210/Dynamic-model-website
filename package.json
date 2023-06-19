@@ -13,9 +13,12 @@
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.4",
+    "@formily/antd-v5": "^1.1.0-beta.3",
+    "@formily/react": "^2.2.25",
     "@umijs/max": "^4.0.68",
     "ahooks": "^3.7.7",
     "antd": "^5.4.0",
+    "dayjs": "^1.11.8",
     "query-string": "^8.1.0",
     "rc-queue-anim": "^2.0.0"
   },

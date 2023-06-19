@@ -11,6 +11,15 @@ export const setFieldsFormat = (data: BasicListApi.PageData) => {
             //@ts-ignore
             result[key] = dayjs(data.dataSource[key]);
             break;
+          case 'textarea': {
+            const textarea = data.dataSource[field.key];
+            //@ts-ignore
+            result[key] =
+              textarea && typeof textarea === 'object'
+                ? JSON.stringify(textarea)
+                : textarea;
+            break;
+          }
           default:
             //@ts-ignore
             result[key] = data.dataSource[key];

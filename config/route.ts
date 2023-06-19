@@ -28,4 +28,10 @@ export const route = [
     component: './BasicList/components/EditPage',
     hideInMenu: true,
   },
+  {
+    name: '模型设计',
+    icon: 'ControlFilled',
+    path: '/model-design/*',
+    component: './ModelDesign',
+  },
 ];
