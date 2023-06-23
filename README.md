@@ -19,7 +19,7 @@
 - ✅ 使用 antd 栅格布局 结合组件 styles 实现样式更优雅
 - ✅ 添加搜索组件 其中展开按钮用 ahooks 的 useToggle
 - ✅ 利用 Button 的 htmlType 属性 `submit`、`reset`
-- ⬜ replace()方法
+- ✅ replace()方法
 - ⬜ 整理一下 ahooks 一些好用的 hooks
 - ✅ 从服务端请求菜单 问题：路由与页面匹配问题 & 服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
   - app.ts layout 增加 iconfontUrl 用阿里的 iconfont
@@ -47,3 +47,5 @@
 - ⬜ 提交表单后 菜单（路由）刷新 + loading
   - useModel refresh
 - ⬜ 面包屑优化
+- ⬜ 单元测试 端到端测试 e2e
+- ⬜ 上线部署
