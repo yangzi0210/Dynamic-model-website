@@ -21,6 +21,7 @@
 - ✅ 利用 Button 的 htmlType 属性 `submit`、`reset`
 - ✅ replace()方法
 - ⬜ 整理一下 ahooks 一些好用的 hooks
+- ✅ 解决登陆后左侧菜单获取的问题 仿照 fetchUserInfo 添加个获取菜单的方法
 - ✅ 从服务端请求菜单 问题：路由与页面匹配问题 & 服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
   - app.ts layout 增加 iconfontUrl 用阿里的 iconfont
   - 通配符 \* :id :name 匹配
