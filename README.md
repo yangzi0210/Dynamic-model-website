@@ -7,7 +7,7 @@
 - ✅ 碰到问题多用谷歌、多看官方文档 百度 CSDN 都是一个抄一个 而且不一定好使
   - 比如 如何判断一个对象是不是 moment/dayjs 百度搜索都是什么说 可以使用\_isAMomentObject 这个属性进行判断 谷歌一搜官方文档说了 直接用 moment.isMoment() dayjs.isDayjs() 就行 好用还清晰
 - ✅ module vs namespace? type vs interface?
-- ⬜ app.ts 的接口报错的返回处理 & 异常处理再思考一下 ：全局异常处理，一部分是全局的错误拦截，另一部分是单独组件的错误拦截。
+- ✅ app.ts 的接口报错的返回处理 & 异常处理再思考一下 ：全局异常处理，一部分是全局的错误拦截，另一部分是单独组件的错误拦截。
 - ✅ 批量删除时弹窗里的表格可以正常在显示，单个删除时表格无法显示
   - 应该是 useState 执行时机的问题，使用 useRef/useSessionStorageState(ahooks) 来解决
 - ✅ 控制台报错：Warning: Instance created by `useForm` is not connected to any Form element. Forget to pass `form` prop?
@@ -20,8 +20,8 @@
 - ✅ 添加搜索组件 其中展开按钮用 ahooks 的 useToggle
 - ✅ 利用 Button 的 htmlType 属性 `submit`、`reset`
 - ✅ replace()方法
-- ⬜ 整理一下 ahooks 一些好用的 hooks
-- ✅ 解决登陆后左侧菜单获取的问题 仿照 fetchUserInfo 添加个获取菜单的方法
+- ✅ 整理一下 ahooks 一些好用的 hooks
+- ✅ 解决登陆后左侧菜单获取的问题 仿照 fetchUserInfo 在 getInitialState 下添加个获取菜单的方法
 - ✅ 从服务端请求菜单 问题：路由与页面匹配问题 & 服务端获取的菜单重定向不生效且 icon 不会自动转化 [issues](https://github.com/ant-design/ant-design-pro/issues/8101)
   - app.ts layout 增加 iconfontUrl 用阿里的 iconfont
   - 通配符 \* :id :name 匹配
@@ -31,22 +31,32 @@
   - 使用 ahooks useUpdateEffect 让 useEffect 首次不执行，只在依赖项更新时运行
 - ⬜ 动态模型的原理 字段的增加等
   - Get layout ? Get layout form 'listBuilder' (code from Model) : Get layout form 'Database' (code from Trait)
-  - 前端传的布局 JSON 给后端，后端一式两份，一份格式化处理拆分字段，一份原封不动存储，前端需要时再传回去
+  - 有一个基础的页面 这个页面的请求的 url 、menthod 都是变量实现新增页面的请求
+  - 前端传的布局 JSON { tableColumn tableToolbar...} 给后端，后端一式两份，一份格式化处理拆分 name sex age 字段进而动态扩充数据库字段，一份原封不动存储，前端需要时再传回去
+  - 字段
+  - Basic Route Name
+  - Fields
+  - Name Title Type List Sorter HideInColumn Edited Disabled
+  - List Action
+  - Title Type Action Url Method Action
 - ✅ 垃圾箱进入退出后 & 切换页面后 批量选择项（batchToolbar）持续存在 注意 setSelectedRowKeys setSelectedRows 置空解决
 - ✅ console 报错的问题 <Col> 组件也要加 key
-- ⬜ 有时间完善下登录页相关 & 国际化
+- ✅ 有时间完善下登录页相关 & 国际化
 - ✅ 安装 formily 报错
   - 版本问题 目前使用的 antd5，应安装 yarn add --save antd dayjs yarn add --save @formily/core @formily/react @formily/antd-v5 推测是 antd5 用 dayjs 而 antd4 用 momentjs 的问题
 - ⬜ JSON Schema
-- ⬜ formily 表单加一个字段 组件为 Button 由于模块“"@formily/antd-v5"”没有导出的成员“Button” 采用 Antd 导出 Button 发现列出现了但是不显示 Button
+- ✅ formily 表单加一个字段 组件为 Button 由于模块“"@formily/antd-v5"”没有导出的成员“Button” 采用 Antd 导出 Button 发现列出现了但是不显示 Button
   - 原因：F12 点击空白区域发现有 Button，但是没值 `<Button></Button` 使用 `x-component-props = {{children:'Data',}}` 解决
 - ⬜ onClick 放置位置
   - 首先觉得使用 `x-component-props = {{children:'Data',onClick:()=>{}}}` 但是这样只能打开弹窗 不知道是谁打开、控制的 那个字段 数据怎么交互
   - 字段监听 antd 文档 focusTriggerAfterClose
 - modal 未清空
 - ✅ formily Chrome 浏览器插件比较好用 看各组件层级的状态比较清晰
-- ⬜ 提交表单后 菜单（路由）刷新 + loading
-  - useModel refresh
+- ✅ 提交表单后 菜单（路由）刷新 + loading
+
+  - useModel 从 @@InitialState 下拿到 InitialState 和 setInitialState 提交完后 setInitialState 的 menu 为最新的 menu
+  - refresh 从 @@InitialState 下还可以拿到一个 refresh 方法 这也可以刷新 会将所有 InitialState 都刷新一遍
+
 - ⬜ 面包屑优化
 - ⬜ 单元测试 端到端测试 e2e
 - ⬜ 上线部署
