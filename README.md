@@ -33,12 +33,14 @@
   - Get layout ? Get layout form 'listBuilder' (code from Model) : Get layout form 'Database' (code from Trait)
   - 有一个基础的页面 这个页面的请求的 url 、menthod 都是变量实现新增页面的请求
   - 前端传的布局 JSON { tableColumn tableToolbar...} 给后端，后端一式两份，一份格式化处理拆分 name sex age 字段进而动态扩充数据库字段，一份原封不动存储，前端需要时再传回去
-  - 字段
+  - 字段设置
   - Basic Route Name
   - Fields
   - Name Title Type List Sorter HideInColumn Edited Disabled
   - List Action
   - Title Type Action Url Method Action
+  - TableToolBar
+  - BatchToolBar
 - ✅ 垃圾箱进入退出后 & 切换页面后 批量选择项（batchToolbar）持续存在 注意 setSelectedRowKeys setSelectedRows 置空解决
 - ✅ console 报错的问题 <Col> 组件也要加 key
 - ✅ 有时间完善下登录页相关 & 国际化
@@ -53,10 +55,8 @@
 - modal 未清空
 - ✅ formily Chrome 浏览器插件比较好用 看各组件层级的状态比较清晰
 - ✅ 提交表单后 菜单（路由）刷新 + loading
-
   - useModel 从 @@InitialState 下拿到 InitialState 和 setInitialState 提交完后 setInitialState 的 menu 为最新的 menu
   - refresh 从 @@InitialState 下还可以拿到一个 refresh 方法 这也可以刷新 会将所有 InitialState 都刷新一遍
-
 - ⬜ 面包屑优化
 - ⬜ 单元测试 端到端测试 e2e
 - ⬜ 上线部署
